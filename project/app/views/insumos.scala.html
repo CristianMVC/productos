@@ -1,0 +1,14 @@
+@(i: Int)
+@import helper._
+
+
+
+  <form action="/addinsumo" method="POST">
+   <div class="form-group">
+       <label>Nombre:</label>
+       <input type='text' name="nombre" />
+       <input type="hidden" name='id' value=@i />
+   </div>
+    <input type="submit" value="add">
+  </form>
+

@@ -1,0 +1,14 @@
+@(f: Form[Productos])(p: Productos)
+@import helper._
+
+
+@main("producto") {
+  @form(routes.Application.mod(p.getId())) {
+   <div class="form-group">    
+    @inputText(f("name").copy(value=Some(p.getName())), '_label -> "Nombre del producto" )
+    @inputText(f("descripcion").copy(value=Some(p.getDescripcion())), '_label -> "Descripcion" ,'value -> "bbb" )
+   </div>
+    <input type="submit" value="Modificar">
+
+ }
+}

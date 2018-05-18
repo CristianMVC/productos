@@ -1,0 +1,163 @@
+@(aaa: Form[Productos])(lista: List[Productos])
+@import helper._
+
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>   
+    
+    <script>
+       $(document).ready(function(){
+         $("#myInput").on("keyup", function() {
+          var value = $(this).val().toLowerCase();
+          $("#myTable tr").filter(function() {
+           $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+   });
+</script>
+
+<script>
+$(function() {
+ $(document).on('click', 'input[type="button"]', function(event) {
+    let id = this.id;
+    if($("."+id).is(":visible"))
+    {
+        $("."+id).hide();
+        
+    }else
+    {
+    $("."+id).show(); 
+    }
+        
+    });   
+});
+
+ function eliminarInsumo(id,idprod)
+  {
+      
+     $.post('eliminarins',
+            {'id':id},
+               function(data) {
+                $("."+id).remove();   
+              
+                
+      });
+  }
+  
+  
+</script>
+    
+    
+</head>
+
+<body>
+<div style="position:relative; width:15em; left:40%; top:2em;   ">
+    <h1 style="position:relative; left:-15%;"> <span class="label label-default">ABM productos</span></h1><br><br>
+    
+@main("producto") {
+  <form action="/add" method="POST">
+   <div class="form-group">
+    @inputText(aaa("name"), '_label -> "Nombre del producto")
+    @inputText(aaa("descripcion"), '_label -> "Descripcion")
+   </div>
+    <input type="submit" value="add">
+  </form>
+}
+
+</div>
+
+@main("Todo list") {
+ 
+<div style="position: relative; background-color: transparent; top:10%;">   
+
+    <table class="table">
+        <div style="position:relative; left:75%; width:15em; "><label>Buscar</label><input class="form-control" id="myInput" type="text" placeholder="Search.."></div>
+      <thead>
+          <tr>
+              <th>Productos</th>
+              <th>Descripcion</th>
+             
+          </tr>
+    </thead> 
+      <tbody id="myTable">    
+        
+         
+         @for(task <- lista) {
+          <tr class="success">  
+              <td>@task.getName() </td>
+              <td>@task.getDescripcion() </td> 
+
+              <td style="width: 600px;"></td>
+              
+              <td >
+                
+                      <div style=" position:relative; width:100px; float:left; ">
+                  @form(routes.Application.modificar(task.getId())) {
+                      <input type="submit" value="Modificar">
+                  }    
+                  </div>
+                   <div style="position:relative; width:100px; float:left; ">    
+                  @form(routes.Application.delete(task.getId())) {
+                      <input type="submit" value="Eliminar">
+                      } 
+                   </div>
+                    <div style="position:relative; width:100px; float:left;">   
+                  @form(routes.Application.add()) {
+                  <input type="button" id=@task.getId() value="Inventario">
+                  }
+                    </div>
+                  
+              </td>
+          <tr   style="display: none" class=@task.getId()>  
+              <td> 
+                  <table>
+               @for(insumo <- task.getInsumos()) {
+               <tr class=@insumo.getId()>
+                   <th><br><h4>- @insumo.getNombre()</h4> </th>
+               
+                  
+               <th> <br><div style="position:relative; left:2em; display:inline;">
+                       
+                       <input type="button" value="-" style="width:20px;" onclick="eliminarInsumo(@insumo.getId(),@task.getId())"/>
+                      
+                      
+                      <input type="button" id=@task.getId() value="mod" style="position:relative; left:1%" >
+        
+                   
+                   </div>
+               </th>
+               
+               </tr>
+               }
+               <div>
+                @form(routes.Application.agregar(task.getId())) {
+               <input type="submit" value="agregar insumo" style="position:relative; left:1%" >  
+               }</div><br>
+              </table>
+         </td>
+          
+          </tr>
+          </tr>
+         }
+         
+        </tr>
+    
+      </tbody>
+  </table>           
+               
+           
+          
+        
+       
+     
+   </div>  
+    
+ 
+        
+    
+    
+}
+
+
+</body>
